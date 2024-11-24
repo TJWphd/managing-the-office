@@ -9,13 +9,13 @@ CREATE TABLE role (
     `title` VARCHAR (31) UNIQUE NOT NULL,
     `salary` DECIMAL NOT NULL,
     `department_id` INTEGER NOT NULL,
-    -- foreign key for department id^-
+    -- TODO: foreign key for department id^-
 );
 
 CREATE TABLE employee (
     `id` SERIAL PRIMARY KEY,
     `first_name` VARCHAR (31) NOT NULL,
     `last_name` VARCHAR (31) NOT NULL,
-        -- foreign key for role id^-
-        -- foreign key for manager_id back to this_
+        -- TODO: foreign key for role id^-
+        -- TODO: foreign key for manager_id back to this_
 );
