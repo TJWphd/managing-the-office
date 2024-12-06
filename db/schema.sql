@@ -23,13 +23,13 @@ CREATE TABLE employee (
     first_name VARCHAR (31) NOT NULL,
     last_name VARCHAR (31) NOT NULL,
     role_id INTEGER NOT NULL,
-    manager_id INTEGER NOT NULL,
+    manager_id INTEGER,
         --foreign key for role id-
     FOREIGN KEY (role_id)
     REFERENCES role(id)
-    ON DELETE SET NULL
+    ON DELETE SET NULL,
         --foreign key for manager_id back to this--
-    FOREIGN KEY (employee_id)
-    REFERENCES this(id)
+    FOREIGN KEY (manager_id)
+    REFERENCES employee(id)
     ON DELETE SET NULL
 );
