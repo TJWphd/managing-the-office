@@ -25,20 +25,7 @@ app.post("/api/new-employee", ({ body }, res) => {
 });
 
 // Read all employees
-app.get("/api/employees", (req, res) => {
-  const sql = `SELECT id, employee_name AS name FROM employees`;
-
-  pool.query(sql, (err, { rows }) => {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
-    }
-    res.json({
-      message: "success",
-      data: rows,
-    });
-  });
-});
+app.get("/api/employees", (req, res) => {});
 
 // Delete an employee
 app.delete("/api/employee/:id", (req, res) => {

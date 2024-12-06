@@ -25,7 +25,9 @@ manual testing
 
 ## Acknowledgements
 
-Thanks to John Young, Zac Warner, and Lindelwe at edX/UC Berkeley Full-Stack Bootcamp for teaching, TAing, and tutoring me.
+Thanks to John Young and Zac Warner at edX/UC Berkeley Full-Stack Bootcamp for help in addition to instruction.
+
+Thanks to my classmate Alex Mena for helping me with some starter code for the inquirer function.
 
 This project is inspired by the Bootcamp Week 12 mini-project, which is a back-end movie database using inquirer and postgre SQL.
 
