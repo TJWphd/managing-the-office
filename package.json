@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "ascii-text-generator": "^1.0.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.1",
     "inquirer": "^8.2.4",

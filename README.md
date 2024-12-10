@@ -29,6 +29,8 @@ Thanks to John Young and Zac Warner at edX/UC Berkeley Full-Stack Bootcamp for h
 
 Thanks to my classmate Alex Mena for helping me with some starter code for the inquirer function.
 
+Thanks to
+
 This project is inspired by the Bootcamp Week 12 mini-project, which is a back-end movie database using inquirer and postgre SQL.
 
 ## Contact

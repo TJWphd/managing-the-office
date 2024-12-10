@@ -1,4 +1,5 @@
 require("dotenv").config();
+const { response } = require("express");
 const inquirer = require("inquirer");
 const pg = require("pg");
 
@@ -12,10 +13,16 @@ const pool = new Pool({
 
 pool.connect();
 
-// const art = require("npm ASCII art maker");
+// let ascii_text_generator = require("ascii-text-generator");
+
+// let input_text = "managing the office";
+
+// console.log("output to file.js successfully.");
+// execute callback
+// ascii_text_generator();
 
 // uses inquirer to make the menu a function
-const tracker = function () {
+function tracker() {
   inquirer
     .prompt([
       {
@@ -54,11 +61,11 @@ const tracker = function () {
       addDepartment();
     }
   }
-};
+}
 
 const viewAllEmployees = () => {
   console.log("viewAllEmployees");
-  const sql = `SELECT employee.id, first_name || ' '|| last_name AS name, role.title, manager_id FROM employee LEFT JOIN role ON employee.role_id = role.id`;
+  const sql = `SELECT employee.id, first_name ||' '|| last_name AS name, role.title, manager_id FROM employee LEFT JOIN role ON employee.role_id = role.id`;
 
   pool.query(sql).then(({ rows }, err) => {
     if (err) {
@@ -99,7 +106,7 @@ const viewAllDepartments = () => {
 
 const addEmployee = () => {
   console.log("addEmployee");
-  const sql = `SELECT id, first_name || ' '|| last_name AS name FROM employee WHERE manager_id IS NULL;`;
+  const sql = `SELECT id, first_name ||' '|| last_name AS name FROM employee WHERE manager_id IS NULL;`;
 
   pool.query(sql).then(({ rows }, err) => {
     if (err) {
@@ -109,32 +116,97 @@ const addEmployee = () => {
     const managerChoices = rows.map(({ id, name }) => {
       return { value: id, name: name };
     });
-    console.log(managerChoices);
-    // TODO: Run another query to get the role id and role title, this is the hardest part
-    const sql = `SELECT...`;
+    const sql = `SELECT id, title FROM role`;
 
     pool.query(sql).then(({ rows }, err) => {
       if (err) {
         console.log(err);
         return;
       }
-      const roleChoices = rows.map(({ id, name }) => {
+      const roleChoices = rows.map(({ id, title }) => {
         return { value: id, name: title };
       });
-      console.log(roleChoices);
-    // then pass as a Choices array so they can insert name, manager name, role
-    tracker();
-  });
+      inquirer
+        .prompt([
+          {
+            name: "first_name",
+            type: "input",
+            message: "What employee first name would you like to create?",
+          },
+          {
+            name: "last_name",
+            type: "input",
+            message: "What employee last name would you like to create?",
+          },
+          {
+            name: "manager_id",
+            type: "list",
+            message: "What manager will you assign this employee under?",
+            choices: managerChoices,
+          },
+          {
+            name: "role_id",
+            type: "list",
+            message: "What role would you like to create?",
+            choices: roleChoices,
+          },
+        ])
+        .then((employeeName) => {
+          const { first_name, last_name, role_id, manager_id } = employeeName;
+          const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ($1, $2, $3, $4)`;
 
-  // tracker();
+          pool
+            .query(sql, [first_name, last_name, role_id, manager_id])
+            .then(({ rows }, err) => {
+              if (err) {
+                console.log(err);
+                return;
+              }
+              console.log("Employee has been created.");
+              tracker();
+            });
+        });
+    });
+  });
 };
-// TODO: LOOK UP SQL UPDATE COMMAND AND FIGURE OUT THE LOGIC - this will run a query to return all emplpyees as choices, then run a query for all role ID and role Title, then the user selects what to update it to.
+
+// TODO: LOOK UP SQL UPDATE COMMAND AND FIGURE OUT THE LOGIC -
+// this will run a query to return all employees as choices,
+// then run a query for all role ID and role Title, then the user selects what to update it to.
+
 const updateEmployee = () => {
-  console.log("updateEmployee");
+  // makes a string that is a SQL query
+  const employeeList = `SELECT id, first_name, last_name FROM employee`;
+  // calling a function pool.query and passing into it the string from above
+  pool.query(employeeList).then(({ rows }, err) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    // cleaning and storing the array for use in a menu
+    const employeeArray = rows.map(({ id, first_name, last_name }) => {
+      return { value: id, name: `${first_name} ${last_name}` };
+    });
+    // ask the user which of these employees they want to edit
+    inquirer
+      .prompt([
+        {
+          name: "Menu",
+          type: "list",
+          message: "Which employee's role would you like to change?",
+          choices: employeeArray,
+        },
+      ])
+      .then((pick) => {
+        const selectee = rows.filter((selectee) => {
+          return selectee.id === pick.Menu;
+        });
+        console.log(selectee);
+      });
+  });
   tracker();
 };
-// TODO: hint from Zac - already doing this in seeds.sql (follow the syntax of INSERT INTO....)
-// will have to call inquirer again since more information is needed.
+
 const addRole = () => {
   // console.log("addRole");
   // Title, Salary, Department_id
@@ -184,7 +256,6 @@ const addRole = () => {
           });
       });
   });
-  //tracker();
 };
 
 const addDepartment = () => {
@@ -208,8 +279,4 @@ const addDepartment = () => {
       });
     });
 };
-
-// use logo function to add my project name etc
-
-// TODO: create queries as functions here
 tracker();
